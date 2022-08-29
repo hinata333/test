@@ -37,7 +37,7 @@ def main():
     print('ページ内のアイテム数', len(jobs))
     page_number = soup.select_one('p.pager')
 
-    for job in jobs[:10]:
+    for job in jobs:
       count += 1
       bar.progress(count//3*5)
       latest_interation.text(f'取得数 {count} ({page_number.text})')
