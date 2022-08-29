@@ -11,7 +11,7 @@ st.title('Webスクレイピング')
 button = st.button('Start')
 latest_interation = st.empty()
 bar = st.progress(0)
-last_number = st.number_input('取得ページ数：', 1, 100, 1)
+last_number = st.number_input('取得ページ数を入力してください。', 1, 100, 1)
 def main():
   #####################################変更欄（右辺のみ変更して下さい。）#####################################
 
