@@ -11,12 +11,12 @@ st.title('Webスクレイピング')
 button = st.button('Start')
 latest_interation = st.empty()
 bar = st.progress(0)
+last_number = st.number_input('取得ページ数：', 1, 100, 1)
 def main():
   #####################################変更欄（右辺のみ変更して下さい。）#####################################
 
   #読み込みページ数 (例：strat_number = 1,last_number = 50  →  1～50ページを取得します。)
   strat_number = 1
-  last_number = 1
 
   #URL (例：items_url = 'https://www.2ndstreet.jp/search?category=700053') ※「''」で囲ってください。
   items_url = 'https://www.2ndstreet.jp/search?category=700053'
