@@ -19,7 +19,7 @@ def main():
   strat_number = 1
 
   #URL (例：items_url = 'https://www.2ndstreet.jp/search?category=700053') ※「''」で囲ってください。
-  items_url = 'https://www.2ndstreet.jp/search?category=700053'
+  items_url = 'https://www.2ndstreet.jp/search?category=931002'
 
   #保存するcsvファイルの名前 (例：csv_name = '2nd_street.csv') ※「''」で囲ってください。
   csv_name = '2nd_street_test_st.csv'
