@@ -184,7 +184,7 @@ def main():
 
 if button:
   df = main()
-  st.write('## 2nd street結果', df)
+  st.write('## 取得結果', df)
   'Done!!'
   csv = df.to_csv(index=False, encoding='utf-8-sig')  
   b64 = base64.b64encode(csv.encode('utf-8-sig')).decode()
