@@ -7,11 +7,11 @@ from time import sleep
 import os
 import base64
 
-st.title('Webスクレイピング')
+st.title('アイミツ　Webスクレイピング')
+last_number = st.number_input('取得カテゴリー数を入力してください。', 1, 100, 1)
 button = st.button('Start')
 latest_interation = st.empty()
 bar = st.progress(0)
-last_number = st.number_input('取得カテゴリー数を入力してください。', 1, 100, 1)
 def main(c_number):
   url = 'https://imitsu.jp/'
   while True:
@@ -53,7 +53,7 @@ def main(c_number):
       print('404エラー')
       pass
     else:
-      kensu = page_soup.select_one('div.service-count-hit').text.replace('件', '').replace(',', '')
+      kensu = int(page_soup.select_one('div.service-count-hit').text.replace('件', '').replace(',', ''))
       print('件数:', kensu)
       n = int(kensu) // 20 + 1
       if int(kensu) % 20 == 0:
@@ -78,6 +78,7 @@ def main(c_number):
         for company in companys:
           count += 1
           print('='*10, f'{count}/{kensu}({i+1}/{n}ページ)', '='*10)
+          bar.progress(count)
           latest_interation.text(f'{count}/{kensu}({i+1}/{n}ページ)')
           company_name = '?'.join(company.text.split()).replace('?', '')
           print(company_name)
@@ -128,6 +129,7 @@ def main(c_number):
 
 if button:
   cates = ['ホームページ制作', 'アプリ開発', 'システム開発', 'ITインフラ構築', 'データセンター', '情報システム代行']
+  cates = cates[:last_number]
   csvs = []
   for i, cate in enumerate(cates):
     if cate == 'ホームページ制作': c_number = 0
@@ -137,13 +139,13 @@ if button:
     elif cate == 'データセンター': c_number = 5
     elif cate == '情報システム代行': c_number = 6
     df = main(c_number)
-    st.write(f'## 結果 {i+1}/{len(cates)}', df)
+    st.write(f'# {cate} 結果 {i+1}/{len(cates)}', df)
     # with pd.ExcelWriter("export_data.xlsx") as EW:
     #   csv = df.to_excel(EW, index=False, sheet_name=f"{cate}")
-    csv = df.to_csv(cate + '.csv', index=False, encoding='utf-8-sig')
+    csv = df.to_csv(index=False, encoding='utf-8-sig')
     b64 = base64.b64encode(csv.encode('utf-8-sig')).decode()
-    href = f'<a href="data:application/octet-stream;base64,{b64}" download="result.csv">download</a>'
-    st.markdown(f"ダウンロードする {href}", unsafe_allow_html=True)
+    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{cate}.csv">download</a>'
+    st.markdown(f"{cate}.csv: {href}", unsafe_allow_html=True)
     # csvs.append(csv)
   'Done'
   # for csv in csvs:
