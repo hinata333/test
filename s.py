@@ -129,22 +129,25 @@ def main(c_number):
 if button:
   cates = ['ホームページ制作', 'アプリ開発', 'システム開発', 'ITインフラ構築', 'データセンター', '情報システム代行']
   csvs = []
-  for cate in cates:
+  for i, cate in enumerate(cates):
     if cate == 'ホームページ制作': c_number = 0
     elif cate == 'アプリ開発': c_number = 1
     elif cate == 'システム開発': c_number = 2
-    elif cate == 'ITインフラ構築': c_number = 3
-    elif cate == 'データセンター': c_number = 4
-    elif cate == '情報システム代行': c_number = 5
+    elif cate == 'ITインフラ構築': c_number = 4
+    elif cate == 'データセンター': c_number = 5
+    elif cate == '情報システム代行': c_number = 6
     df = main(c_number)
-    st.write('## 結果', df)
+    st.write(f'## 結果 {i+1}/{len(cates)}', df)
     # with pd.ExcelWriter("export_data.xlsx") as EW:
     #   csv = df.to_excel(EW, index=False, sheet_name=f"{cate}")
     csv = df.to_csv(cate + '.csv', index=False, encoding='utf-8-sig')
-    csvs.append(csv)
-  'Done'
-  for csv in csvs:
     b64 = base64.b64encode(csv.encode('utf-8-sig')).decode()
     href = f'<a href="data:application/octet-stream;base64,{b64}" download="result.csv">download</a>'
     st.markdown(f"ダウンロードする {href}", unsafe_allow_html=True)
+    # csvs.append(csv)
+  'Done'
+  # for csv in csvs:
+  #   b64 = base64.b64encode(csv.encode('utf-8-sig')).decode()
+  #   href = f'<a href="data:application/octet-stream;base64,{b64}" download="result.csv">download</a>'
+  #   st.markdown(f"ダウンロードする {href}", unsafe_allow_html=True)
 
