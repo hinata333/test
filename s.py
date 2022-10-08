@@ -139,7 +139,7 @@ if button:
     elif cate == 'データセンター': c_number = 5
     elif cate == '情報システム代行': c_number = 6
     df = main(c_number)
-    st.write(f'# {cate} 結果 {i+1}/{len(cates)}', df)
+    st.write(f'### {cate} 結果 {i+1}/{len(cates)}', df)
     # with pd.ExcelWriter("export_data.xlsx") as EW:
     #   csv = df.to_excel(EW, index=False, sheet_name=f"{cate}")
     csv = df.to_csv(index=False, encoding='utf-8-sig')
