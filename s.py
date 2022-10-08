@@ -64,7 +64,7 @@ def main(c_number):
         page_url = job.get('href') + 'search/' + f'?pn={i+1}#title'
         while True:
           try:
-            sleep(2)
+            sleep(1)
             page_r = requests.get(page_url, timeout=3)
             page_r.raise_for_status()
           except Exception as e:
@@ -86,7 +86,7 @@ def main(c_number):
           retry = 0
           while retry < 10:
             try:
-              sleep(2)
+              sleep(1)
               detail_r = requests.get(detail_url, timeout=3)
               detail_r.raise_for_status()
             except Exception as e:
