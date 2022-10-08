@@ -128,6 +128,7 @@ def main(c_number):
 
 if button:
   cates = ['ホームページ制作', 'アプリ開発', 'システム開発', 'ITインフラ構築', 'データセンター', '情報システム代行']
+  csvs = []
   for cate in cates:
     if cate == 'ホームページ制作': c_number = 0
     elif cate == 'アプリ開発': c_number = 1
@@ -137,86 +138,13 @@ if button:
     elif cate == '情報システム代行': c_number = 5
     df = main(c_number)
     st.write('## 結果', df)
-    with pd.ExcelWriter("export_data.xlsx") as EW:
-      csv = df.to_excel(EW, index=False, sheet_name=f"{cate}")
+    # with pd.ExcelWriter("export_data.xlsx") as EW:
+    #   csv = df.to_excel(EW, index=False, sheet_name=f"{cate}")
+    csv = df.to_csv(cate + '.csv', index=False, encoding='utf-8-sig')
+    csvs.append(csv)
   'Done'
-  b64 = base64.b64encode(csv.encode('utf-8-sig')).decode()
-  href = f'<a href="data:application/octet-stream;base64,{b64}" download="result.csv">download</a>'
-  st.markdown(f"ダウンロードする {href}", unsafe_allow_html=True)
-
-
-# if __name__ == '__main__':
-#   main()
-
-# st.write('プログレスバーの表示')
-# 'Start!!'
-
-# latest_interation = st.empty()
-# bar = st.progress(0)
-
-# for i in range(100):
-#   latest_interation.text(f'Iteration {i+1}')
-#   bar.progress(i + 1)
-#   time.sleep(0.1)
-
-# 'Done!!'
-
-
-# left_column, right_column = st.columns(2)
-# button = left_column.button('右カラムに文字を表示')
-# if button:
-#   right_column.write('ココは右カラム')
-
-# expander = st.expander('問い合わせ')
-# expander.write('問い合わせ内容を書く')
-
-# text = st.text_input('あなたの趣味を教えてください。')
-# condition = st.slider('あなたの今の調子は？', 0, 100, 50)
-# 'あなたが趣味:', text
-# 'コンディション', condition
-
-# st.sidebar.write('Interactive Widgets')
-
-# text = st.sidebar.text_input('あなたの趣味を教えてください。')
-# condition = st.sidebar.slider('あなたの今の調子は？', 0, 100, 50)
-
-
-# option = st.selectbox(
-#   'あなたが好きな数字を教えてください。',
-#   list(range(1,11))
-# )
-
-# 'あなたが好きな数字は', option, 'です。'
-
-# if st.checkbox('Show Image'):
-#   img = Image.open('C_Works.png')
-#   st.image(img, caption='test', use_column_width=True)
-
-
-
-
-
-
-# df = pd.DataFrame(
-#   np.random.rand(100, 2)/[50, 50] + [36.3945194, 139.1034433],
-#   columns=['lat', 'lon']
-# )
-
-# st.map(df)
-
-# st.table(df.style.highlight_max(axis=0))
-
-# """
-# # 章
-# ## 節
-# ### 項
-
-# ```python
-# import streamlit as st
-# import numpy as np
-# import pandas as pd
-
-# ```
-
-# """
+  for csv in csvs:
+    b64 = base64.b64encode(csv.encode('utf-8-sig')).decode()
+    href = f'<a href="data:application/octet-stream;base64,{b64}" download="result.csv">download</a>'
+    st.markdown(f"ダウンロードする {href}", unsafe_allow_html=True)
 
