@@ -8,11 +8,69 @@ import os
 import base64
 
 st.title('アイミツ　Webスクレイピング')
-last_number = st.number_input('取得カテゴリー数を入力してください。', 1, 100, 1)
+
+st.write('・取得する都道府県を選択して下さい。')
+
+prefecture = []
+col1, col2, col3, col4, col5, col6, col7= st.columns(7)
+with col1:
+  pre_1 = st.checkbox('北海道', value=False)
+with col2:
+  pre_2 = st.checkbox('青森県', value=False)
+with col3:
+  pre_3 = st.checkbox('岩手県', value=False)
+with col4:
+  pre_4 = st.checkbox('宮城県', value=False)
+with col5:
+  pre_5 = st.checkbox('秋田県', value=False)
+with col6:
+  pre_6 = st.checkbox('山形県', value=False)
+with col7:
+  pre_7 = st.checkbox('福島県', value=False)
+
+
+if pre_1: prefecture.append('北海道')
+if pre_2: prefecture.append('青森県')
+if pre_3: prefecture.append('岩手県')
+if pre_4: prefecture.append('宮城県')
+if pre_5: prefecture.append('秋田県')
+if pre_6: prefecture.append('山形県')
+if pre_7: prefecture.append('福島県')
+st.write('選択中:', prefecture)
+  
+
+cates = []
+st.write(' ')
+st.write('・取得するカテゴリーを選択して下さい。')
+col2_1, col2_2, col2_3 = st.columns(3)
+with col2_1:
+  elem_1 = st.checkbox('ホームページ制作', value=False)
+with col2_2:
+  elem_2 = st.checkbox('アプリ開発', value=False)
+with col2_3:
+  elem_3 = st.checkbox('システム開発', value=False)
+
+if elem_1: cates.append('ホームページ制作')
+if elem_2: cates.append('アプリ開発')
+if elem_3: cates.append('システム開発')
+st.write('選択中:', cates)
+
+prefecture_ori = ['hokkaido', 'aomori', 'iwate', 'miyagi', 'akita', 'yamagata', 'fukushima', 'ibaraki', 'tochigi', 'gumma', 'saitama', 'chiba', 'tokyo', 'kanagawa', 'niigata', 'toyama', 'ishikawa', 'fukui', 'yamanashi', 'nagano', 'gifu', 'shizuoka', 'aichi', 'mie', 'shiga', 'kyoto', 'osaka', 'hyogo', 'nara', 'wakayama','tottori', 'shimane', 'okayama', 'hiroshima', 'yamaguchi', 'tokushima', 'kagawa', 'ehime', 'kochi', 'fukuoka', 'saga', 'nagasaki', 'kumamoto', 'oita', 'miyazaki', 'kagoshima', 'okinawa']
+# last_number = st.number_input('取得カテゴリー数を入力してください。', 1, 100, 1)
 button = st.button('Start')
 latest_interation = st.empty()
 bar = st.progress(0)
-def main(c_number):
+def main(c_number, select_pre):
+  if select_pre == '北海道': select_pre = 'hokkaido'
+  elif select_pre == '青森県': select_pre = 'aomori'
+  elif select_pre == '岩手県': select_pre = 'iwate'
+  elif select_pre == '宮城県': select_pre = 'miyagi'
+  elif select_pre == '秋田県': select_pre = 'akita'
+  elif select_pre == '山形県': select_pre = 'yamagata'
+  elif select_pre == '福島県': select_pre = 'fukushima'
+
+
+
   url = 'https://imitsu.jp/'
   while True:
     try:
@@ -34,8 +92,10 @@ def main(c_number):
     print('*'*100)
     print(job.text)
     csv_name = f'{job.text}'
-    page_url = job.get('href') + 'search/'
+    page_url = job.get('href') + f'pr-{select_pre}/'
+    print('*'*100)
     print(page_url)
+    print('*'*100)
     retry = 0
     while retry < 10:
       try:
@@ -53,6 +113,9 @@ def main(c_number):
       print('404エラー')
       pass
     else:
+      titel = page_soup.select_one('titel')
+      if titel:
+        print(titel.text)
       kensu = int(page_soup.select_one('div.service-count-hit').text.replace('件', '').replace(',', ''))
       print('件数:', kensu)
       n = int(kensu) // 20 + 1
@@ -61,7 +124,7 @@ def main(c_number):
 
       n = 1
       for i in range(n):
-        page_url = job.get('href') + 'search/' + f'?pn={i+1}#title'
+        page_url = job.get('href') + f'pr-{select_pre}/' + f'?pn={i+1}#title'
         while True:
           try:
             sleep(1)
@@ -128,8 +191,8 @@ def main(c_number):
 #       # df.to_csv(csv_name, index=False, encoding='utf-8-sig')
 
 if button:
-  cates = ['ホームページ制作', 'アプリ開発', 'システム開発', 'ITインフラ構築', 'データセンター', '情報システム代行']
-  cates = cates[:last_number]
+  # cates = ['ホームページ制作', 'アプリ開発', 'システム開発', 'ITインフラ構築', 'データセンター', '情報システム代行']
+  # cates = cates[:last_number]
   csvs = []
   for i, cate in enumerate(cates):
     if cate == 'ホームページ制作': c_number = 0
@@ -138,16 +201,17 @@ if button:
     elif cate == 'ITインフラ構築': c_number = 4
     elif cate == 'データセンター': c_number = 5
     elif cate == '情報システム代行': c_number = 6
-    df = main(c_number)
-    st.write(f'### {cate} 結果 {i+1}/{len(cates)}', df)
-    # with pd.ExcelWriter("export_data.xlsx") as EW:
-    #   csv = df.to_excel(EW, index=False, sheet_name=f"{cate}")
-    csv = df.to_csv(index=False, encoding='utf-8-sig')
-    b64 = base64.b64encode(csv.encode('utf-8-sig')).decode()
-    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{cate}.csv">download</a>'
-    st.markdown(f"{cate}.csv: {href}", unsafe_allow_html=True)
+    for select_pre in prefecture:
+      df = main(c_number, select_pre)
+      st.write(f'### {cate} ({select_pre})結果 {i+1}/{len(cates)}', df)
+      # with pd.ExcelWriter("export_data.xlsx") as EW:
+      #   csv = df.to_excel(EW, index=False, sheet_name=f"{cate}")
+      csv = df.to_csv(index=False, encoding='utf-8-sig')
+      b64 = base64.b64encode(csv.encode('utf-8-sig')).decode()
+      href = f'<a href="data:application/octet-stream;base64,{b64}" download="{cate}_{select_pre}.csv">Download</a>'
+      st.markdown(f"{cate}_{select_pre}.csv: {href}", unsafe_allow_html=True)
     # csvs.append(csv)
-  'Done'
+  '---------Done----------'
   # for csv in csvs:
   #   b64 = base64.b64encode(csv.encode('utf-8-sig')).decode()
   #   href = f'<a href="data:application/octet-stream;base64,{b64}" download="result.csv">download</a>'
